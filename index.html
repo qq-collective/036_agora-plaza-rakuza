@@ -273,6 +273,19 @@
   ::-webkit-scrollbar-track { background: var(--bg2); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
+  .date-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px 0;
+  }
+  .date-row label { font-size: 11px; color: var(--text3); white-space: nowrap; font-weight: 700; }
+  .date-picker {
+    flex: 1;
+    background: var(--bg2); border: 1px solid var(--border2);
+    color: var(--text2); font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; padding: 5px 10px; border-radius: 4px; outline: none;
+  }
+  .date-picker:focus { border-color: var(--accent); }
+
   /* ── Password screen ── */
   #pwScreen {
     position: fixed; inset: 0; z-index: 999;
@@ -371,7 +384,11 @@
 <div class="layout">
   <div class="left">
     <div class="panel-ttl">📋 ナレッジ貼り付け → 追加</div>
-    <textarea id="inputArea" placeholder="ここにナレッジページのテキストをそのままペーストしてください&#10;&#10;例：&#10;2026年3月18日 Pro相談会ナレッジ&#10;1. 友人のホームページを納品 - ...&#10;2. Playwrightで自動テスト・..."></textarea>
+    <div class="date-row">
+      <label>📅 収録日</label>
+      <input type="date" class="date-picker" id="datePicker">
+    </div>
+    <textarea id="inputArea" placeholder="「今回のハイライト」以降のテキストをそのままペースト&#10;&#10;例：&#10;今回のハイライト&#10;RPGゲーム風AIアプリ - メタバース的な教室空間の構想&#10;メタバースの歴史から学ぶ「来続ける理由」の設計&#10;&#10;※ 従来どおり番号付きリストでもOKです"></textarea>
     <div class="preview">
       <h4>🔍 解析プレビュー</h4>
       <div id="previewContent"><span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span></div>
@@ -558,19 +575,90 @@ let records = [
 let nextId=142, currentFilter='ALL';
 let newIds=new Set();
 
-function parseInput(text){
-  const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
-  let date=null; const titles=[];
-  for(const line of lines){
-    const dm=line.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
-    if(dm) date=`${dm[1]}-${dm[2].padStart(2,'0')}-${dm[3].padStart(2,'0')}`;
-    const tm=line.match(/^\d+[\.．\)）]\s*(.+)/);
-    if(tm) titles.push(tm[1].trim());
-  }
-  return {date,titles};
+function getPickerDate(){
+  const v = document.getElementById('datePicker').value;
+  return v || null; // YYYY-MM-DD or null
 }
 
-function classify(title){
+function parseInput(text){
+  const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+  // テキスト内の日付（従来形式）
+  let textDate = null;
+  const titles = [];
+
+  // 「今回のハイライト」モード検出
+  const highlightIdx = lines.findIndex(l => /ハイライト|highlight/i.test(l));
+
+  if(highlightIdx !== -1){
+    // ハイライト以降の行をタイトルとして全取得（見出し行自体は除外）
+    const bodyLines = lines.slice(highlightIdx + 1);
+    for(const line of bodyLines){
+      // 番号付きなら番号を除去、なければそのまま
+      const numbered = line.match(/^\d+[\.．\)）]\s*(.+)/);
+      const title = numbered ? numbered[1].trim() : line;
+      if(title) titles.push(title);
+    }
+  } else {
+    // 従来モード：番号付きリスト + テキスト内日付
+    for(const line of lines){
+      const dm = line.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+      if(dm) textDate = `${dm[1]}-${dm[2].padStart(2,'0')}-${dm[3].padStart(2,'0')}`;
+      const tm = line.match(/^\d+[\.．\)）]\s*(.+)/);
+      if(tm) titles.push(tm[1].trim());
+    }
+  }
+
+  // 日付優先順：ピッカー > テキスト内日付
+  const date = getPickerDate() || textDate;
+  return {date, titles, highlightMode: highlightIdx !== -1};
+}
+
+document.getElementById('inputArea').addEventListener('input', function(){
+  const {date, titles, highlightMode} = parseInput(this.value);
+  const box = document.getElementById('previewContent');
+  const btn = document.getElementById('btnAdd');
+
+  if(!titles.length && !this.value.trim()){
+    box.innerHTML = '<span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span>';
+    btn.disabled = true; return;
+  }
+
+  const warnings = [];
+  if(!date) warnings.push('⚠️ <b>収録日が未設定です</b>（上の日付欄で指定してください）');
+  if(!titles.length) warnings.push('⚠️ <b>タイトルが見つかりません</b>（「今回のハイライト」以降をコピペ、または番号付きリスト形式で貼ってください）');
+
+  let html = '';
+  if(warnings.length){
+    html += `<div style="background:#fdf0ec;border:1px solid var(--roast-bd);border-radius:4px;padding:8px 10px;margin-bottom:8px;font-size:11px;line-height:1.8;color:var(--roast);">${warnings.join('<br>')}</div>`;
+  }
+  if(date) html += `<div class="preview-date">📅 ${date}${highlightMode?' <span style="font-size:10px;color:var(--text3);">ハイライトモード</span>':''}</div>`;
+  if(titles.length){
+    html += titles.map((t,i)=>`<div class="preview-item"><span class="n">${i+1}.</span><span>${t.length>36?t.slice(0,36)+'…':t}</span></div>`).join('');
+  }
+  box.innerHTML = html;
+  btn.disabled = !(date && titles.length);
+});
+
+// 日付ピッカー変更時もプレビュー再描画
+document.getElementById('datePicker').addEventListener('change', function(){
+  document.getElementById('inputArea').dispatchEvent(new Event('input'));
+});
+
+function addEntries(){
+  const {date, titles} = parseInput(document.getElementById('inputArea').value);
+  if(!date || !titles.length) return;
+  const added = titles.map(title=>{
+    const {code,genre,tval} = classify(title);
+    const rec = {id:nextId++, date, title, genre, code, tval};
+    records.push(rec); newIds.add(rec.id); return rec;
+  });
+  document.getElementById('inputArea').value = '';
+  document.getElementById('previewContent').innerHTML = '<span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span>';
+  document.getElementById('btnAdd').disabled = true;
+  setTimeout(()=>{added.forEach(r=>newIds.delete(r.id));renderTable();},5000);
+  renderAll();
+  showToast(`✅ ${added.length}件追加しました（${date}）`);
+}
   let code='🔥 今が旬',genre='技術実践',tval='○使えそう';
   if(/本質|変わらない|姿勢|美徳|向き合い|ステートレス|来続ける|歴史|初めまして/.test(title)) code='🏛️ 定番';
   else if(/3日半|10万|600ページ|YCombinator|Y Combinator/.test(title)) code='⭐ 授業向き';
@@ -580,46 +668,6 @@ function classify(title){
   if(code==='⭐ 授業向き'||code==='🏛️ 定番') tval='◎即戦力';
   else if(code==='📦 原石') tval='─参考程度';
   return {code,genre,tval};
-}
-
-document.getElementById('inputArea').addEventListener('input',function(){
-  const {date,titles}=parseInput(this.value);
-  const box=document.getElementById('previewContent');
-  const btn=document.getElementById('btnAdd');
-  if(!date&&!titles.length){
-    box.innerHTML='<span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span>';
-    btn.disabled=true; return;
-  }
-  // エラー状態の分析
-  const warnings = [];
-  if(!date) warnings.push('⚠️ <b>日付が見つかりません</b>（例：2026年4月24日 の形式が必要です）');
-  if(!titles.length) warnings.push('⚠️ <b>タイトルが見つかりません</b>（例：1. タイトル名 の形式が必要です）');
-  let html = '';
-  if(warnings.length){
-    html += `<div style="background:#fdf0ec;border:1px solid var(--roast-bd);border-radius:4px;padding:8px 10px;margin-bottom:8px;font-size:11px;line-height:1.8;color:var(--roast);">${warnings.join('<br>')}</div>`;
-  }
-  if(date) html += `<div class="preview-date">📅 ${date}</div>`;
-  if(titles.length){
-    html += titles.map((t,i)=>`<div class="preview-item"><span class="n">${i+1}.</span><span>${t.length>36?t.slice(0,36)+'…':t}</span></div>`).join('');
-  }
-  box.innerHTML=html;
-  btn.disabled=!(date&&titles.length);
-});
-
-function addEntries(){
-  const {date,titles}=parseInput(document.getElementById('inputArea').value);
-  if(!date||!titles.length) return;
-  const added=titles.map(title=>{
-    const {code,genre,tval}=classify(title);
-    const rec={id:nextId++,date,title,genre,code,tval};
-    records.push(rec); newIds.add(rec.id); return rec;
-  });
-  document.getElementById('inputArea').value='';
-  document.getElementById('previewContent').innerHTML='<span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span>';
-  document.getElementById('btnAdd').disabled=true;
-  setTimeout(()=>{added.forEach(r=>newIds.delete(r.id));renderTable();},5000);
-  renderAll();
-  showToast(`✅ ${added.length}件追加しました（${date}）`);
 }
 
 function setFilter(code,el){
