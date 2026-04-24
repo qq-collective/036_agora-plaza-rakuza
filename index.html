@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCENARI AGORA STUDIO</title>
+<title>Agora Platz Rakuza</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -251,14 +251,118 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg2); }
   ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    header { padding: 12px 16px; }
+    header h1 { font-size: 15px; }
+    .stats { padding: 8px 12px; gap: 5px; }
+    .stat { padding: 4px 10px; }
+    .stat-count { font-size: 14px; }
+    .layout { grid-template-columns: 1fr; height: auto; }
+    .left { border-right: none; border-bottom: 2px solid var(--border2); height: auto; }
+    textarea { height: 140px; }
+    .preview { min-height: auto; }
+    .right { height: 60vh; min-height: 400px; }
+    .filterbar { padding: 8px 10px; gap: 5px; flex-wrap: wrap; }
+    .fbtn { font-size: 10px; padding: 4px 8px; }
+    .search-input { width: 100%; margin-left: 0; margin-top: 4px; }
+    thead th:nth-child(4), thead th:nth-child(6), tbody td:nth-child(4), tbody td:nth-child(6) { display: none; }
+    tbody td { padding: 8px; font-size: 11px; }
+    .td-title { font-size: 11px; }
+  }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── Password screen ── */
+  #pwScreen {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--bg2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pw-box {
+    background: var(--bg);
+    border: 2px solid var(--border2);
+    border-radius: 10px;
+    padding: 40px 36px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 6px 24px rgba(52,40,28,0.12);
+  }
+  .pw-box h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 800;
+    color: var(--text); margin-bottom: 6px;
+  }
+  .pw-box h2 span { color: var(--accent); }
+  .pw-box p { font-size: 11px; color: var(--text3); margin-bottom: 24px; }
+  .pw-input {
+    width: 100%; padding: 11px 14px;
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 5px; color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif; font-size: 14px;
+    outline: none; text-align: center; letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+  .pw-input:focus { border-color: var(--accent); }
+  .pw-btn {
+    width: 100%; padding: 11px;
+    background: var(--accent); border: none; border-radius: 5px;
+    color: #fff; font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+    transition: background 0.15s;
+  }
+  .pw-btn:hover { background: var(--accent2); }
+  .pw-err {
+    margin-top: 10px; font-size: 12px;
+    color: var(--roast); min-height: 18px;
+  }
+
+  /* ── Card view (mobile) ── */
+  .card-list { padding: 10px; display: none; flex-direction: column; gap: 8px; }
+  .card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 14px;
+  }
+  .card-top { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .card-title { flex: 1; font-size: 13px; color: var(--text); line-height: 1.5; font-weight: 500; }
+  .card-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .card-date { font-size: 11px; color: var(--text3); }
+  .card-del {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text3); font-size: 12px;
+    width: 24px; height: 24px; border-radius: 3px; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .card-del:hover { border-color: #c07070; color: #c07070; }
+  select.cs-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    color: var(--text2); font-family: 'Noto Sans JP', sans-serif;
+    font-size: 11px; padding: 3px 6px; border-radius: 3px; cursor: pointer; outline: none;
+  }
+
+  @media (max-width: 768px) {
+    .table-wrap table { display: none; }
+    .card-list { display: flex; }
+  }
 </style>
 </head>
 <body>
 
+<!-- Password Screen -->
+<div id="pwScreen">
+  <div class="pw-box">
+    <h2>Agora <span>Platz</span> Rakuza</h2>
+    <p>対話から生まれた知識の広場<br>メンバー専用エリアです</p>
+    <input class="pw-input" id="pwInput" type="password" placeholder="パスワードを入力" autocomplete="off">
+    <button class="pw-btn" onclick="checkPw()">入室する</button>
+    <div class="pw-err" id="pwErr"></div>
+  </div>
+</div>
+
 <header>
   <div>
-    <h1>SCENARI <span>AGORA</span> STUDIO</h1>
-    <p>ここから飛び立つ話題を探せ</p>
+    <h1>Agora <span>Platz</span> Rakuza</h1>
+    <p>対話から生まれた知識の広場</p>
   </div>
 </header>
 
@@ -278,11 +382,13 @@
   <div class="right">
     <div class="filterbar">
       <button class="fbtn active" onclick="setFilter('ALL',this)">すべて</button>
-      <button class="fbtn" onclick="setFilter('NANKIN',this)">🟢 NANKIN</button>
-      <button class="fbtn" onclick="setFilter('ROAST',this)">🔥 ROAST</button>
-      <button class="fbtn" onclick="setFilter('KARA',this)">⬜ KARA</button>
-      <button class="fbtn" onclick="setFilter('GOLDEN',this)">🌟 GOLDEN</button>
+      <button class="fbtn" onclick="setFilter('🏛️ 定番',this)">🏛️ 定番</button>
+      <button class="fbtn" onclick="setFilter('🔥 今が旬',this)">🔥 今が旬</button>
+      <button class="fbtn" onclick="setFilter('📦 原石',this)">📦 原石</button>
+      <button class="fbtn" onclick="setFilter('⭐ 授業向き',this)">⭐ 授業向き</button>
       <input class="search-input" id="searchInput" placeholder="🔍 タイトル検索..." oninput="renderTable()">
+      <button class="fbtn" onclick="exportJSON()" title="JSONでエクスポート">💾 保存</button>
+      <button class="fbtn" onclick="clearLS()" title="初期データに戻す" style="color:var(--text3)">↺</button>
     </div>
     <div class="table-wrap">
       <table>
@@ -298,6 +404,7 @@
         <h3>データがありません</h3>
         <p>左パネルにナレッジテキストをペーストして追加してください</p>
       </div>
+      <div class="card-list" id="cardList"></div>
     </div>
   </div>
 </div>
@@ -305,8 +412,150 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let records = [];
-let nextId=1, currentFilter='ALL';
+let records = [
+  {id:1, date:"2026-03-11", title:"AIのAPI調整って何をしてるの？ - テレチャット裏側の話", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:2, date:"2026-03-11", title:"AIは毎回「初めまして」 - ステートレスの仕組みを理解する", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:3, date:"2026-03-11", title:"AIを追うことが目的になっていないか？ - 向き合い方を考える", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:4, date:"2026-03-11", title:"2日で作ったミーティング記録アプリ - 開発相談と「裏側を知る」大切さ", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:5, date:"2026-03-11", title:"AI時代の資料作成術 - チラシ・スライド・ポスターをどう作る？", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:6, date:"2026-03-11", title:"バイブコーディングの先へ - エージェンティックエンジニアリングの時代", genre:"思想・教育", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:7, date:"2026-03-04", title:"前回振り返り: Open ClawでAIエージェントをDiscordで動かしてみた話", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:8, date:"2026-03-04", title:"ホームページにAI向けの「もう一つの顔」を作るべきか？", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:9, date:"2026-03-04", title:"新動画シリーズ「AIエージェント」始動", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:10, date:"2026-03-04", title:"エージェントに任せるときの時間感覚と煮詰まったときの脱出法", genre:"思想・教育", code:"🏛️ 定番", tval:"○使えそう"},
+  {id:11, date:"2026-03-04", title:"テレポート新サービス クローズドβテスト開始", genre:"ツール紹介", code:"📦 原石", tval:"─参考程度"},
+  {id:12, date:"2026-02-25", title:"Notion AIのエージェント機能とMCP連携—知識管理が次のステージへ", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:13, date:"2026-02-25", title:"Supabase＋Vercelのスケーラビリティ—数千ユーザーなら心配不要", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:14, date:"2026-02-25", title:"セナリでの学びを社外に広めた体験談", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:15, date:"2026-02-25", title:"開発で煮詰まったときの脱出法—セッション変更と第三者レビュー", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:16, date:"2026-02-25", title:"高校教育とAI—生徒が抱える恐怖と「身につく」学びの意味", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:17, date:"2026-02-25", title:"話題のOpen Claw（オープンクロー）とは何か", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:18, date:"2026-02-25", title:"スキルの実践活用—Paper Banana・メルマガ・動画の自動生成", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:19, date:"2026-02-18", title:"VSCodeで英語のMarkdownをサクッと翻訳できるプラグイン", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:20, date:"2026-02-18", title:"AIを活用した論文執筆・研究の新しい進め方", genre:"ビジネス事例", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:21, date:"2026-02-18", title:"GitHubでの共有と同期の基本—クローン・プル・プッシュ", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:22, date:"2026-02-18", title:"スキルの環境共有とプラグイン化の可能性", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:23, date:"2026-02-18", title:"研修講師のための生成AIアプリ活用術", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:24, date:"2026-02-18", title:"楽器店アプリがApp Storeに公開！ストア申請の実体験", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:25, date:"2026-02-18", title:"スキルのセキュリティと利便性のバランス", genre:"思想・教育", code:"🏛️ 定番", tval:"○使えそう"},
+  {id:26, date:"2026-02-18", title:"スマホアプリの開発・テスト・少人数配布の方法", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:27, date:"2026-02-04", title:"Agent Skills動画シリーズの紹介とセキュリティの話", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:28, date:"2026-02-04", title:"スキル・プラグインの仕組みと活用のコツ", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:29, date:"2026-02-04", title:"AIで本を出版＆補助金アプリ開発：参加者の成果報告", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:30, date:"2026-02-04", title:"Moltbookと「テクノロジーの思春期」", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:31, date:"2026-02-04", title:"AIを活用した論文執筆と教育の未来", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:32, date:"2026-02-04", title:"将棋AIアプリ開発の相談：ゲームAIのコツ", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:33, date:"2026-02-04", title:"AI時代の知識の残し方とゲーミフィケーション", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:34, date:"2026-01-28", title:"GPTsを活用した論文執筆と開発のセカンドオピニオン", genre:"ビジネス事例", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:35, date:"2026-01-28", title:"Macアプリ配布の壁：公証問題の続報", genre:"技術実践", code:"📦 原石", tval:"△要加工"},
+  {id:36, date:"2026-01-28", title:"YouTubeチュートリアルから自分専用の学習サイトを作る", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:37, date:"2026-01-28", title:"Replit：環境構築不要のブラウザベース開発", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:38, date:"2026-01-28", title:"Claude Cowork：デスクトップ操作を自動化", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:39, date:"2026-01-28", title:"大量文章の編集術：サブエージェント並列処理とプロット管理", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:40, date:"2026-01-28", title:"AI時代の教育と子どもの学び", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:41, date:"2026-01-21", title:"Macアプリを他の人に配布しようとしたら壁にぶつかった話", genre:"技術実践", code:"📦 原石", tval:"△要加工"},
+  {id:42, date:"2026-01-21", title:"非エンジニアでも本格的な顧客管理アプリが作れた話", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:43, date:"2026-01-21", title:"Claude Codeは開発だけじゃない：大量ファイルの整理・教科書作成に活用", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:44, date:"2026-01-21", title:"開発ルールはもう細かく決めなくていい？AIの進化で変わったこと", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:45, date:"2026-01-21", title:"AI視点で話す・書くことの効果", genre:"思想・教育", code:"🏛️ 定番", tval:"○使えそう"},
+  {id:46, date:"2026-01-21", title:"「AIがないとできない」は悪いことじゃない", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:47, date:"2026-01-21", title:"エージェント化が急速に進んでいる", genre:"思想・教育", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:48, date:"2026-01-14", title:"Macデスクトップアプリ開発：UIデザインの奥深さを実感", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:49, date:"2026-01-14", title:"非エンジニアがホームページ＋予約システムを完成させた話", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:50, date:"2026-01-14", title:"Nano Banana Proで四コマ漫画を作る：プロットが大事", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:51, date:"2026-01-14", title:"Claude Codeで業務資料の読み込み・要約に活用", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:52, date:"2026-01-14", title:"開発環境の話：VS Code派とターミナル派", genre:"技術実践", code:"📦 原石", tval:"△要加工"},
+  {id:53, date:"2026-01-14", title:"AI情報のキャッチアップ：YouTubeチャンネルの紹介", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:54, date:"2026-01-07", title:"Claude Codeのコマンド集をみんなで共有", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:55, date:"2026-01-07", title:"年末年始の開発報告：TauriでのMacアプリ開発とGitHub運用", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:56, date:"2026-01-07", title:"Claude Code開発者ボリス氏のベストプラクティスを読み解く", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:57, date:"2026-01-07", title:"GitHubを使った複数環境での開発：コンフリクトを避けるには", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:58, date:"2026-01-07", title:"MCPとスキルの活用：PlaywrightとLive UIキット", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:59, date:"2026-01-07", title:"初心者の悩み：AIに暴走されないための手綱の握り方", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:60, date:"2025-12-24", title:"Zeamiのプロジェクト管理：入れ子にしないのがベスト", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:61, date:"2025-12-24", title:"Agent Skillsがオープン化：業界標準へ", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:62, date:"2025-12-24", title:"Agent Skillsの使い方：スキルを入れてパワポを自動生成", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:63, date:"2025-12-24", title:"社内でAgent Skillsを共有する方法：自前マーケットプレイスの構築", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:64, date:"2025-12-24", title:"Claude for Chrome登場：ブラウザ拡張でClaudeが使える", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:65, date:"2025-12-24", title:"PDFをAIに読ませるコツ：画像化すると精度が上がる", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:66, date:"2025-12-24", title:"AIが読みやすいデータ形式とは：構造化されたものが強い", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:67, date:"2025-12-24", title:"GitHubを使った開発日報の自動生成", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:68, date:"2025-12-24", title:"ナレッジ共有の工夫：プラグイン化で「秘伝のタレ」を配布", genre:"思想・教育", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:69, date:"2025-12-24", title:"Copilotはなぜ話題にならない？AIツールの普及の壁", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:70, date:"2025-12-17", title:"最新AIモデルのアップデート情報とAPIの仕組み", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:71, date:"2025-12-17", title:"Nano Banana Proの画像生成とトークンコストの話", genre:"ツール紹介", code:"🔥 今が旬", tval:"△要加工"},
+  {id:72, date:"2025-12-17", title:"Zeamiとは何か：Claude Codeを乗りこなすためのツール", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:73, date:"2025-12-17", title:"Mac購入時のスペック相談：Zeamiを使うために必要なもの", genre:"技術実践", code:"📦 原石", tval:"△要加工"},
+  {id:74, date:"2025-12-17", title:"AIモデルの使い分け：Opus・Sonnet・Haikuをどう選ぶか", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:75, date:"2025-12-17", title:"Google Apps Script（GAS）でフォームやスライドを自動生成", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:76, date:"2025-12-17", title:"CursorのビジュアルエディタでUIを直感的に調整", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:77, date:"2025-12-17", title:"AI生成画像のウォーターマーク問題", genre:"思想・教育", code:"🔥 今が旬", tval:"△要加工"},
+  {id:78, date:"2025-12-17", title:"AIの未来像：ぬかボットと社会実装の話", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:79, date:"2025-12-10", title:"Gemini 3.0 / Nano Banana Proの衝撃：画像生成AIの新時代", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:80, date:"2025-12-10", title:"設計図を書くことの効果：AIとの開発がスムーズに", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:81, date:"2025-12-10", title:"セナリ学院の動画コンテンツ活用法", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:82, date:"2025-12-10", title:"NotebookLMで文字起こしが不要に？音声ファイルからの直接分析", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:83, date:"2025-12-10", title:"認証機能の実装：既存サービスを賢く使う", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:84, date:"2025-12-10", title:"マルチエージェントとは何か：すでに使っている仕組み", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:85, date:"2025-12-10", title:"AIにできないこと：フィールドワークと信頼関係", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:86, date:"2025-12-03", title:"子供たちと10分でルーレットアプリを作った話", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:87, date:"2025-12-03", title:"Git/GitHubを使い始めた体験談", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:88, date:"2025-12-03", title:"GitHubのPublic/Private設定の重要性", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:89, date:"2025-12-03", title:"APIキーの管理とセキュリティ", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:90, date:"2025-12-03", title:"Gemini 3.0の登場とGoogleの躍進", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:91, date:"2025-12-03", title:"Googleワークスペースとの連携の強み", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:92, date:"2025-12-03", title:"データベース構造を理解したら開発が楽になった話", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:93, date:"2025-12-03", title:"バックエンド（基盤）の重要性", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:94, date:"2025-11-26", title:"GPT 5.1の実力——「茶の湯」で壁打ちしてみたらGemini 3.0との違いが見えた", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:95, date:"2025-11-26", title:"複数のAIツールを組み合わせた開発ワークフロー", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:96, date:"2025-11-26", title:"ローカル環境と本番環境の違い——なぜ動かなくなるのか？", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:97, date:"2025-11-26", title:"AIへの丸投げとブラックボックス問題", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:98, date:"2025-11-26", title:"AIでインベーダーゲームを再現——プロット作りの重要性", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:99, date:"2025-11-26", title:"ChatGPTグループチャット機能の登場", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:100, date:"2025-11-26", title:"NotebookLMの新機能：インフォグラフィックとスライド", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:101, date:"2025-11-19", title:"AIを「検索」ではなく「問いかけの相手」として使う", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:102, date:"2025-11-19", title:"知能の外部化としてのAI——「料理」の例えで考える", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:103, date:"2025-11-19", title:"AIでフィギュアスケートの著作権問題を解決した話", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:104, date:"2025-11-19", title:"AIモデルを比較してみたら、こんなに違った", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:105, date:"2025-11-19", title:"AIとの学び方：ELI5と「自分だけの教科書」", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:106, date:"2025-11-19", title:"60代で感じる「青春再び」——世代によるAI活用の違い", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:107, date:"2025-11-19", title:"GitとGitHub入門：「差分管理」という考え方", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:108, date:"2025-11-12", title:"Plan Mode（計画モード）の活用", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:109, date:"2025-11-12", title:"AIとの関係性の作り方", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:110, date:"2025-11-12", title:"CLAUDE.mdとメタプロンプト管理", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:111, date:"2025-11-12", title:"ドキュメント管理 vs Gitコミット", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:112, date:"2025-11-12", title:"エラーの記録と学習", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:113, date:"2025-11-12", title:"環境変数の安全な管理", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:114, date:"2025-11-12", title:"セキュリティと負荷対策", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:115, date:"2025-11-05", title:"生成AIのAPI利用時のレスポンス速度について", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:116, date:"2025-11-05", title:"Claude Code開発における仕様書の書き方", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:117, date:"2025-11-05", title:"ベクターワークスAPIの開発アプローチ", genre:"技術実践", code:"📦 原石", tval:"△要加工"},
+  {id:118, date:"2025-11-05", title:"ローカル環境とデプロイ環境での動作の違い", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:119, date:"2025-11-05", title:"過去プロジェクトの情報引き継ぎ方法", genre:"技術実践", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:120, date:"2026-03-25", title:"RPGゲーム風AIアプリ - メタバース的な教室空間の構想", genre:"思想・教育", code:"🏛️ 定番", tval:"○使えそう"},
+  {id:121, date:"2026-03-25", title:"メタバースの歴史から学ぶ「来続ける理由」の設計", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:122, date:"2026-03-25", title:"ゲーム内AIエージェントの活用 - ニュース配信・リマインダー・非同期交流", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:123, date:"2026-03-25", title:"音声生成技術の進化 - Qwen3のTTS（テキスト・トゥ・スピーチ）", genre:"ツール紹介", code:"🔥 今が旬", tval:"△要加工"},
+  {id:124, date:"2026-03-25", title:"マンション管理アプリの進捗とAIモデルによるサイト評価", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:125, date:"2026-03-25", title:"ヨガ教室サイトを3日半で構築 - Astro + Cloudflare Pages + Claude Code", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:126, date:"2026-03-25", title:"要件定義サービスのビジネス化 - 1週間10万円でAIプロトタイプ", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:127, date:"2026-03-25", title:"英語原稿600ページの翻訳プロジェクト - AIエージェントで作家性を保持", genre:"技術実践", code:"⭐ 授業向き", tval:"◎即戦力"},
+  {id:128, date:"2026-03-25", title:"YouTubeからVimeoへの大規模移行をClaude Codeで自動化", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:129, date:"2026-03-25", title:"「できますか？」にまず聞いてみる姿勢の大切さ", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:130, date:"2026-03-18", title:"友人のホームページを納品 - Claude Codeでマニュアルも自動生成", genre:"技術実践", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:131, date:"2026-03-18", title:"Playwrightで自動テスト・操作デモ動画も撮れる", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:132, date:"2026-03-18", title:"マンション管理アプリをMDファイル駆動で開発", genre:"技術実践", code:"🔥 今が旬", tval:"△要加工"},
+  {id:133, date:"2026-03-18", title:"エンジニアの三大美徳 - 「怠惰」は最高の原動力", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:134, date:"2026-03-18", title:"Open Clawよりも安全で簡単？Claude Coworkの実力", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:135, date:"2026-03-18", title:"A2UI - AIがテキストではなくUIで返してくれる時代に", genre:"思想・教育", code:"🔥 今が旬", tval:"◎即戦力"},
+  {id:136, date:"2026-03-18", title:"AIガイド機能と関連動画検索の改善", genre:"技術実践", code:"📦 原石", tval:"─参考程度"},
+  {id:137, date:"2026-03-18", title:"AI動画制作のデモ - 声もモデルも全部AIで", genre:"ツール紹介", code:"🔥 今が旬", tval:"○使えそう"},
+  {id:138, date:"2026-03-18", title:"POPOPO登場 - カメラのいらないテレビ電話と不気味の谷", genre:"ツール紹介", code:"🔥 今が旬", tval:"△要加工"},
+  {id:139, date:"2026-03-18", title:"メディアは変わっても人間の本質は変わらない", genre:"思想・教育", code:"🏛️ 定番", tval:"◎即戦力"},
+  {id:140, date:"2026-03-18", title:"目的を明確にしたら健康習慣マップが実用的になった話", genre:"ビジネス事例", code:"🏛️ 定番", tval:"○使えそう"},
+  {id:141, date:"2026-03-18", title:"Y Combinator式ピッチ分析ワーク - Who/What/Core Value", genre:"ビジネス事例", code:"⭐ 授業向き", tval:"◎即戦力"}
+];
+let nextId=142, currentFilter='ALL';
 let newIds=new Set();
 
 function parseInput(text){
@@ -322,14 +571,14 @@ function parseInput(text){
 }
 
 function classify(title){
-  let code='ROAST',genre='技術実践',tval='○使えそう';
-  if(/本質|変わらない|姿勢|美徳|向き合い|ステートレス|来続ける|歴史|初めまして/.test(title)) code='NANKIN';
-  else if(/3日半|10万|600ページ|YCombinator|Y Combinator/.test(title)) code='GOLDEN';
+  let code='🔥 今が旬',genre='技術実践',tval='○使えそう';
+  if(/本質|変わらない|姿勢|美徳|向き合い|ステートレス|来続ける|歴史|初めまして/.test(title)) code='🏛️ 定番';
+  else if(/3日半|10万|600ページ|YCombinator|Y Combinator/.test(title)) code='⭐ 授業向き';
   if(/思想|美徳|本質|向き合い|姿勢|歴史|変わらない|時代に|ステートレス|メタバース/.test(title)) genre='思想・教育';
   else if(/TTS|Qwen|Cowork|POPOPO|A2UI|動画制作|Open Claw/.test(title)) genre='ツール紹介';
   else if(/ビジネス|10万|健康|ピッチ|資料作成|YCombinator/.test(title)) genre='ビジネス事例';
-  if(code==='GOLDEN'||code==='NANKIN') tval='◎即戦力';
-  else if(code==='KARA') tval='─参考程度';
+  if(code==='⭐ 授業向き'||code==='🏛️ 定番') tval='◎即戦力';
+  else if(code==='📦 原石') tval='─参考程度';
   return {code,genre,tval};
 }
 
@@ -341,9 +590,18 @@ document.getElementById('inputArea').addEventListener('input',function(){
     box.innerHTML='<span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span>';
     btn.disabled=true; return;
   }
-  let html=date?`<div class="preview-date">📅 ${date}</div>`
-    :`<div style="color:var(--roast);font-size:11px;margin-bottom:6px;">⚠ 日付が見つかりません</div>`;
-  html+=titles.map((t,i)=>`<div class="preview-item"><span class="n">${i+1}.</span><span>${t.length>36?t.slice(0,36)+'…':t}</span></div>`).join('');
+  // エラー状態の分析
+  const warnings = [];
+  if(!date) warnings.push('⚠️ <b>日付が見つかりません</b>（例：2026年4月24日 の形式が必要です）');
+  if(!titles.length) warnings.push('⚠️ <b>タイトルが見つかりません</b>（例：1. タイトル名 の形式が必要です）');
+  let html = '';
+  if(warnings.length){
+    html += `<div style="background:#fdf0ec;border:1px solid var(--roast-bd);border-radius:4px;padding:8px 10px;margin-bottom:8px;font-size:11px;line-height:1.8;color:var(--roast);">${warnings.join('<br>')}</div>`;
+  }
+  if(date) html += `<div class="preview-date">📅 ${date}</div>`;
+  if(titles.length){
+    html += titles.map((t,i)=>`<div class="preview-item"><span class="n">${i+1}.</span><span>${t.length>36?t.slice(0,36)+'…':t}</span></div>`).join('');
+  }
   box.innerHTML=html;
   btn.disabled=!(date&&titles.length);
 });
@@ -371,13 +629,13 @@ function setFilter(code,el){
 }
 
 function renderStats(){
-  const c={NANKIN:0,ROAST:0,KARA:0,GOLDEN:0};
+  const c={'🏛️ 定番':0,'🔥 今が旬':0,'📦 原石':0,'⭐ 授業向き':0};
   records.forEach(r=>c[r.code]++);
   document.getElementById('statsBar').innerHTML=[
-    {emoji:'🟢',label:'NANKIN', count:c.NANKIN, color:'var(--nankin)'},
-    {emoji:'🔥',label:'ROAST',  count:c.ROAST,  color:'var(--roast)'},
-    {emoji:'⬜',label:'KARA',   count:c.KARA,   color:'var(--kara)'},
-    {emoji:'🌟',label:'GOLDEN', count:c.GOLDEN, color:'var(--golden)'},
+    {emoji:'🏛️',label:'定番', count:c['🏛️ 定番']||0, color:'var(--nankin)'},
+    {emoji:'🔥',label:'今が旬', count:c['🔥 今が旬']||0, color:'var(--roast)'},
+    {emoji:'📦',label:'原石', count:c['📦 原石']||0, color:'var(--kara)'},
+    {emoji:'⭐',label:'授業向き', count:c['⭐ 授業向き']||0, color:'var(--golden)'},
     {emoji:'📚',label:'TOTAL',  count:records.length, color:'var(--accent)'},
   ].map(s=>`<div class="stat"><span>${s.emoji}</span><span class="stat-label">${s.label}</span><span class="stat-count" style="color:${s.color}">${s.count}</span></div>`).join('');
 }
@@ -391,6 +649,7 @@ function renderTable(){
   }).sort((a,b)=>b.date.localeCompare(a.date));
   const tc=v=>v==='◎即戦力'?'s1':v==='○使えそう'?'s2':v==='△要加工'?'s3':'s4';
   document.getElementById('emptyState').style.display=filtered.length?'none':'block';
+  renderCards(filtered);
   document.getElementById('tableBody').innerHTML=filtered.map(r=>`
     <tr>
       <td class="td-no">${r.id}</td>
@@ -398,10 +657,10 @@ function renderTable(){
       <td class="td-title">${r.title}</td>
       <td><span class="genre-tag">${r.genre}</span></td>
       <td><select class="cs" onchange="changeCode(${r.id},this.value)">
-        <option value="NANKIN" ${r.code==='NANKIN'?'selected':''}>🟢 NANKIN</option>
-        <option value="ROAST"  ${r.code==='ROAST' ?'selected':''}>🔥 ROAST</option>
-        <option value="KARA"   ${r.code==='KARA'  ?'selected':''}>⬜ KARA</option>
-        <option value="GOLDEN" ${r.code==='GOLDEN'?'selected':''}>🌟 GOLDEN</option>
+        <option value="🏛️ 定番" ${r.code==='🏛️ 定番'?'selected':''}>🏛️ 定番</option>
+        <option value="🔥 今が旬"  ${r.code==='🔥 今が旬' ?'selected':''}>🔥 今が旬</option>
+        <option value="📦 原石"   ${r.code==='📦 原石'  ?'selected':''}>📦 原石</option>
+        <option value="⭐ 授業向き" ${r.code==='⭐ 授業向き'?'selected':''}>⭐ 授業向き</option>
       </select></td>
       <td><span class="tval ${tc(r.tval)}">${r.tval}</span></td>
       <td><button class="btn-del" onclick="deleteRecord(${r.id})">×</button></td>
@@ -418,7 +677,7 @@ function editDate(cell, id) {
   input.focus(); input.select();
   function save() {
     const v = input.value.trim();
-    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) { r.date = v; showToast('📅 日付を更新しました'); }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) { r.date = v; showToast('📅 日付を更新しました'); saveToLS(); }
     else { r.date = original; }
     renderAll();
   }
@@ -427,11 +686,164 @@ function editDate(cell, id) {
   input.addEventListener('click', e => e.stopPropagation());
 }
 function changeCode(id,code){const r=records.find(r=>r.id===id);if(r){r.code=code;renderAll();}}
-function deleteRecord(id){if(!confirm('削除しますか？'))return;records=records.filter(r=>r.id!==id);renderAll();}
 function renderAll(){renderStats();renderTable();}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
+// ── Password ─────────────────────────────────
+const PW_HASH = '6f1c08b4f77f3e94c5d2a3e7b9f0d821'; // MD5: agora2024
+// ↑ パスワード変更時はここのハッシュを差し替え（現在のPW: agora2024）
+function md5(s){
+  // 軽量MD5実装
+  function safeAdd(x,y){var lsw=(x&0xFFFF)+(y&0xFFFF);return(((x>>16)+(y>>16)+(lsw>>16))<<16)|(lsw&0xFFFF);}
+  function bitRotateLeft(n,c){return(n<<c)|(n>>>(32-c));}
+  function md5cmn(q,a,b,x,s,t){return safeAdd(bitRotateLeft(safeAdd(safeAdd(a,q),safeAdd(x,t)),s),b);}
+  function ff(a,b,c,d,x,s,t){return md5cmn((b&c)|((~b)&d),a,b,x,s,t);}
+  function gg(a,b,c,d,x,s,t){return md5cmn((b&d)|(c&(~d)),a,b,x,s,t);}
+  function hh(a,b,c,d,x,s,t){return md5cmn(b^c^d,a,b,x,s,t);}
+  function ii(a,b,c,d,x,s,t){return md5cmn(c^(b|(~d)),a,b,x,s,t);}
+  function utf8Encode(str){return unescape(encodeURIComponent(str));}
+  function str2binl(str){var bin=[];for(var i=0;i<str.length*8;i+=8)bin[i>>5]|=(str.charCodeAt(i/8)&0xFF)<<(i%32);return bin;}
+  function binl2hex(binarray){var hex='0123456789abcdef',str='';for(var i=0;i<binarray.length*4;i++){str+=hex.charAt((binarray[i>>2]>>((i%4)*8+4))&0xF)+hex.charAt((binarray[i>>2]>>((i%4)*8))&0xF);}return str;}
+  function core_md5(x,len){
+    x[len>>5]|=0x80<<((len)%32);x[(((len+64)>>>9)<<4)+14]=len;
+    var a=1732584193,b=-271733879,c=-1732584194,d=271733878;
+    for(var i=0;i<x.length;i+=16){
+      var olda=a,oldb=b,oldc=c,oldd=d;
+      a=ff(a,b,c,d,x[i],7,-680876936);d=ff(d,a,b,c,x[i+1],12,-389564586);c=ff(c,d,a,b,x[i+2],17,606105819);b=ff(b,c,d,a,x[i+3],22,-1044525330);
+      a=ff(a,b,c,d,x[i+4],7,-176418897);d=ff(d,a,b,c,x[i+5],12,1200080426);c=ff(c,d,a,b,x[i+6],17,-1473231341);b=ff(b,c,d,a,x[i+7],22,-45705983);
+      a=ff(a,b,c,d,x[i+8],7,1770035416);d=ff(d,a,b,c,x[i+9],12,-1958414417);c=ff(c,d,a,b,x[i+10],17,-42063);b=ff(b,c,d,a,x[i+11],22,-1990404162);
+      a=ff(a,b,c,d,x[i+12],7,1804603682);d=ff(d,a,b,c,x[i+13],12,-40341101);c=ff(c,d,a,b,x[i+14],17,-1502002290);b=ff(b,c,d,a,x[i+15],22,1236535329);
+      a=gg(a,b,c,d,x[i+1],5,-165796510);d=gg(d,a,b,c,x[i+6],9,-1069501632);c=gg(c,d,a,b,x[i+11],14,643717713);b=gg(b,c,d,a,x[i],20,-373897302);
+      a=gg(a,b,c,d,x[i+5],5,-701558691);d=gg(d,a,b,c,x[i+10],9,38016083);c=gg(c,d,a,b,x[i+15],14,-660478335);b=gg(b,c,d,a,x[i+4],20,-405537848);
+      a=gg(a,b,c,d,x[i+9],5,568446438);d=gg(d,a,b,c,x[i+14],9,-1019803690);c=gg(c,d,a,b,x[i+3],14,-187363961);b=gg(b,c,d,a,x[i+8],20,1163531501);
+      a=gg(a,b,c,d,x[i+13],5,-1444681467);d=gg(d,a,b,c,x[i+2],9,-51403784);c=gg(c,d,a,b,x[i+7],14,1735328473);b=gg(b,c,d,a,x[i+12],20,-1926607734);
+      a=hh(a,b,c,d,x[i+5],4,-378558);d=hh(d,a,b,c,x[i+8],11,-2022574463);c=hh(c,d,a,b,x[i+11],16,1839030562);b=hh(b,c,d,a,x[i+14],23,-35309556);
+      a=hh(a,b,c,d,x[i+1],4,-1530992060);d=hh(d,a,b,c,x[i+4],11,1272893353);c=hh(c,d,a,b,x[i+7],16,-155497632);b=hh(b,c,d,a,x[i+10],23,-1094730640);
+      a=hh(a,b,c,d,x[i+13],4,681279174);d=hh(d,a,b,c,x[i],11,-358537222);c=hh(c,d,a,b,x[i+3],16,-722521979);b=hh(b,c,d,a,x[i+6],23,76029189);
+      a=hh(a,b,c,d,x[i+9],4,-640364487);d=hh(d,a,b,c,x[i+12],11,-421815835);c=hh(c,d,a,b,x[i+15],16,530742520);b=hh(b,c,d,a,x[i+2],23,-995338651);
+      a=ii(a,b,c,d,x[i],6,-198630844);d=ii(d,a,b,c,x[i+7],10,1126891415);c=ii(c,d,a,b,x[i+14],15,-1416354905);b=ii(b,c,d,a,x[i+5],21,-57434055);
+      a=ii(a,b,c,d,x[i+12],6,1700485571);d=ii(d,a,b,c,x[i+3],10,-1894986606);c=ii(c,d,a,b,x[i+10],15,-1051523);b=ii(b,c,d,a,x[i+1],21,-2054922799);
+      a=ii(a,b,c,d,x[i+8],6,1873313359);d=ii(d,a,b,c,x[i+15],10,-30611744);c=ii(c,d,a,b,x[i+6],15,-1560198380);b=ii(b,c,d,a,x[i+13],21,1309151649);
+      a=ii(a,b,c,d,x[i+4],6,-145523070);d=ii(d,a,b,c,x[i+11],10,-1120210379);c=ii(c,d,a,b,x[i+2],15,718787259);b=ii(b,c,d,a,x[i+9],21,-343485551);
+      a=safeAdd(a,olda);b=safeAdd(b,oldb);c=safeAdd(c,oldc);d=safeAdd(d,oldd);
+    }
+    return[a,b,c,d];
+  }
+  var utf=utf8Encode(s);
+  return binl2hex(core_md5(str2binl(utf),utf.length*8));
+}
+
+const PW_LS = 'agora_platz_auth';
+function checkPw(){
+  const val = document.getElementById('pwInput').value;
+  if(md5(val) === PW_HASH){
+    sessionStorage.setItem(PW_LS, '1');
+    document.getElementById('pwScreen').style.display = 'none';
+  } else {
+    const err = document.getElementById('pwErr');
+    err.textContent = 'パスワードが違います';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+    setTimeout(()=>err.textContent='', 2500);
+  }
+}
+document.getElementById('pwInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter') checkPw();
+});
+// 既にセッション認証済みなら即非表示
+if(sessionStorage.getItem(PW_LS)==='1'){
+  document.getElementById('pwScreen').style.display='none';
+} else {
+  // ページ読み込み時にパスワード入力にフォーカス
+  setTimeout(()=>document.getElementById('pwInput').focus(), 100);
+}
+
+// ── Card View ────────────────────────────────
+function renderCards(filtered){
+  const tc=v=>v==='◎即戦力'?'s1':v==='○使えそう'?'s2':v==='△要加工'?'s3':'s4';
+  const cl = document.getElementById('cardList');
+  if(!cl) return;
+  cl.innerHTML = filtered.map(r=>`
+    <div class="card">
+      <div class="card-top">
+        <div class="card-title">${r.title}</div>
+        <button class="card-del" onclick="deleteRecord(${r.id})">×</button>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">📅 ${r.date}</span>
+        <span class="genre-tag">${r.genre}</span>
+        <select class="cs-card" onchange="changeCode(${r.id},this.value)">
+          <option value="🏛️ 定番"  ${r.code==='🏛️ 定番' ?'selected':''}>🏛️ 定番</option>
+          <option value="🔥 今が旬" ${r.code==='🔥 今が旬'?'selected':''}>🔥 今が旬</option>
+          <option value="📦 原石"   ${r.code==='📦 原石'  ?'selected':''}>📦 原石</option>
+          <option value="⭐ 授業向き" ${r.code==='⭐ 授業向き'?'selected':''}>⭐ 授業向き</option>
+        </select>
+        <span class="tval ${tc(r.tval)}">${r.tval}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ── LocalStorage ─────────────────────────────
+const LS_KEY = 'agora_platz_records';
+const LS_ID  = 'agora_platz_nextId';
+
+function saveToLS(){
+  try{
+    localStorage.setItem(LS_KEY, JSON.stringify(records));
+    localStorage.setItem(LS_ID,  String(nextId));
+  }catch(e){ console.warn('LS save failed', e); }
+}
+
+function loadFromLS(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    const nid = localStorage.getItem(LS_ID);
+    if(raw){
+      const saved = JSON.parse(raw);
+      if(Array.isArray(saved) && saved.length > 0){
+        records = saved;
+        nextId  = nid ? parseInt(nid) : records.reduce((m,r)=>Math.max(m,r.id),0)+1;
+        return true;
+      }
+    }
+  }catch(e){ console.warn('LS load failed', e); }
+  return false;
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(records, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `agora_platz_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('💾 JSONエクスポート完了');
+}
+
+function clearLS(){
+  if(!confirm('LocalStorageのデータを消去し、初期データ（141件）に戻しますか？')) return;
+  localStorage.removeItem(LS_KEY);
+  localStorage.removeItem(LS_ID);
+  location.reload();
+}
+// ─────────────────────────────────────────────
+
+// save after every mutation
+const _origAdd    = addEntries;
+addEntries = function(){ _origAdd(); saveToLS(); };
+
+const _origChange = changeCode;
+changeCode = function(id,code){ _origChange(id,code); saveToLS(); };
+
+function deleteRecord(id){
+  if(!confirm('削除しますか？')) return;
+  records = records.filter(r=>r.id!==id);
+  renderAll(); saveToLS();
+};
+
+// ── Init ─────────────────────────────────────
+const loaded = loadFromLS();
 renderAll();
+if(loaded) showToast(`💾 保存データをロードしました（${records.length}件）`);
 </script>
 </body>
 </html>
