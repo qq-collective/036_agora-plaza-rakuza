@@ -739,20 +739,15 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 // ── Password ─────────────────────────────────
 // SHA-256 of 'agora2024'
-const PW_HASH = 'c655a8bfa991555d9df565fc38c6a2e9e69a1edc9dea2777e2568247338e6d85';
-// ↑ パスワード変更時はここのハッシュを差し替え（現在のPW: agora2024）
+// ── パスワード（平文）── 変更はここだけ ──
+const PW = 'agora2024';
+// ─────────────────────────────────────────
 
 const PW_LS = 'agora_platz_auth';
 
-async function sha256(str){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-async function checkPw(){
+function checkPw(){
   const val = document.getElementById('pwInput').value;
-  const hash = await sha256(val);
-  if(hash === PW_HASH){
+  if(val === PW){
     sessionStorage.setItem(PW_LS, '1');
     document.getElementById('pwScreen').style.display = 'none';
   } else {
@@ -766,11 +761,9 @@ async function checkPw(){
 document.getElementById('pwInput').addEventListener('keydown', e=>{
   if(e.key==='Enter') checkPw();
 });
-// 既にセッション認証済みなら即非表示
 if(sessionStorage.getItem(PW_LS)==='1'){
   document.getElementById('pwScreen').style.display='none';
 } else {
-  // ページ読み込み時にパスワード入力にフォーカス
   setTimeout(()=>document.getElementById('pwInput').focus(), 100);
 }
 
