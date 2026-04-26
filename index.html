@@ -547,12 +547,13 @@ function parseInput(text){
   return {date, titles};
 }
 
-document.getElementById('inputArea').addEventListener('input', function(){
-  const {date, titles} = parseInput(this.value);
+function onInputChange(){
+  const el = document.getElementById('inputArea');
+  const {date, titles} = parseInput(el.value);
   const box = document.getElementById('previewContent');
   const btn = document.getElementById('btnAdd');
 
-  if(!this.value.trim()){
+  if(!el.value.trim()){
     box.innerHTML = '<span style="color:var(--text3);font-size:11px;">テキストを貼ると自動解析します</span>';
     btn.disabled = true; return;
   }
@@ -563,7 +564,7 @@ document.getElementById('inputArea').addEventListener('input', function(){
 
   let html = '';
   if(warnings.length){
-    html += `<div style="background:#fdf0ec;border:1px solid var(--roast-bd,#e0a090);border-radius:4px;padding:8px 10px;margin-bottom:8px;font-size:11px;line-height:1.8;color:#c07060;">${warnings.join('<br>')}</div>`;
+    html += `<div style="background:#fdf0ec;border:1px solid #e0a090;border-radius:4px;padding:8px 10px;margin-bottom:8px;font-size:11px;line-height:1.8;color:#c07060;">${warnings.join('<br>')}</div>`;
   }
   if(date) html += `<div class="preview-date">📅 ${date}</div>`;
   if(titles.length){
@@ -571,7 +572,15 @@ document.getElementById('inputArea').addEventListener('input', function(){
   }
   box.innerHTML = html;
   btn.disabled = !(date && titles.length);
+}
+
+// あらゆるイベントで検知
+['input','change','keyup','paste'].forEach(ev=>{
+  document.getElementById('inputArea').addEventListener(ev, function(){
+    setTimeout(onInputChange, 50); // paste後のDOM反映を待つ
+  });
 });
+
 
 // 日付ピッカー変更時もプレビュー再描画
 document.getElementById('datePicker').addEventListener('change', function(){
